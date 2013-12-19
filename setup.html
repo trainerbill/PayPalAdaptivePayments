@@ -16,7 +16,7 @@
 		<option value="Chained">Chained</option>
 	</select>
 	<div data-ng-show="adaptive.type">
-		<form name="yep" method="post" action="">
+		
 			<h4>Credentials</h4>
 			<table class="table table-striped">
 				<thead></thead>
@@ -140,15 +140,39 @@
 					</tbody>
 				</table>
 			</div>
-			<a data-ng-show="adaptive.payKey" href="https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_ap-payment&paykey={{adaptive.payKey}}"><img src="https://www.paypalobjects.com/en_US/i/bnr/bnr_MSPFbanner_ec2_143x32.gif" alt="Pay With PayPal" /></a>
-		</form>
+			
+			<div data-ng-show="adaptive.payKey">
+				<label>Experience</label>
+				<select data-ng-model="adaptive.experience">
+					<option value=""></option>
+					<option value="aplight">Adaptive Payments Lightbox</option>
+					<option value="ecredirect">Express Payment Redirect</option>
+				</select>
+				
+				<div data-ng-show="adaptive.experience == 'aplight'">
+					<form action= "https://www.sandbox.paypal.com/webapps/adaptivepayment/flow/pay" method="get" target="PPDGFrame">
+						<input id="type" type="hidden" name="expType" value="light">
+						<input id="paykey" type="hidden" name="paykey" value="{{adaptive.payKey}}">
+						<input id="submitBtn" type="submit" />
+					</form>
+				</div>
+				<div data-ng-show="adaptive.experience == 'ecredirect'">
+					<a data-ng-show="adaptive.payKey" href="https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_ap-payment&paykey={{adaptive.payKey}}"><img src="https://www.paypalobjects.com/en_US/i/bnr/bnr_MSPFbanner_ec2_143x32.gif" alt="Pay With PayPal" /></a>
+				</div>
+			</div>
+			
 	</div>
 </div>
+
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.5/angular.min.js"></script>
 
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-
+<script src="https://www.paypalobjects.com/js/external/dg.js"></script>
+<script>
+var dgFlow = new PAYPAL.apps.DGFlow({ trigger: 'submitBtn' });
+</script>
 
 <script type="text/javascript">
 var app = angular.module('adaptive', [])
@@ -243,7 +267,7 @@ var app = angular.module('adaptive', [])
 		$scope.adaptive.headers['X-PAYPAL-SECURITY-PASSWORD'] = '1374512372';
 		$scope.adaptive.headers['X-PAYPAL-SECURITY-SIGNATURE'] = 'Aj1PRxuNKRh0FhwjgrTLGnn515trAGwGZHW7KLOlOuyQom-IEXlq.w4w';
 		$scope.adaptive.headers['X-PAYPAL-APPLICATION-ID'] = 'APP-80W284485P519543T';
-
+		//$scope.adaptive.variables.expType = 'instant';
 		//Set Url Params
 		$scope.adaptive.urlparams = "Pay";
 		
@@ -253,9 +277,14 @@ var app = angular.module('adaptive', [])
 		$scope.adaptive.variables.currencyCode = 'USD';
 		$scope.adaptive.variables.returnUrl = 'http://localhost/PayPalAdaptivePayments/return.html';
 		$scope.adaptive.variables.cancelUrl = 'http://localhost/PayPalAdaptivePayments/cancel.html';
+		
+		
+		
+		$scope.adaptive.variables.expType ='instant';
+		
 		//Set receivers
-		$scope.adaptive.receivers.push({email: 'seller@awesome.com','amount':'100'});
-		$scope.adaptive.receivers.push({email: 'seller1@awesome.com','amount':'200'});
+		$scope.adaptive.receivers.push({email: 'seller@awesome.com','amount':'4'});
+		$scope.adaptive.receivers.push({email: 'seller1@awesome.com','amount':'1'});
 
 		//console.log($scope.adaptive);
 	}
